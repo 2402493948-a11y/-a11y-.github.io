@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电动摩托车续航估算工具</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- PWA 相关标签 -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="pwa-192x192.svg">
+    <meta name="theme-color" content="#a8e6cf">
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="description" content="根据电池参数和骑行情况，精确计算电动摩托车的续航里程">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="续航估算">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>电动摩托车续航估算工具</h1>
+            <p>根据电池参数和骑行情况，精确计算续航里程</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="card battery-card">
+                <h2>电池参数</h2>
+                <form id="batteryForm">
+                    <div class="form-group">
+                        <label for="batteryVoltage">电池电压 (V)</label>
+                        <input type="number" id="batteryVoltage" placeholder="如: 48, 60, 72" value="72">
+                    </div>
+                    <div class="form-group">
+                        <label for="batteryCapacity">电池容量 (Ah)</label>
+                        <input type="number" id="batteryCapacity" placeholder="如: 20, 32, 38" value="38">
+                    </div>
+                    <div class="form-group">
+                        <label for="motorPower">电机功率 (W)</label>
+                        <input type="number" id="motorPower" placeholder="如: 800, 1000, 1200" value="1000">
+                    </div>
+                    <div class="form-group">
+                        <label for="speed">行驶速度 (km/h)</label>
+                        <input type="number" id="speed" placeholder="如: 40, 50, 60" value="60">
+                    </div>
+                </form>
+            </div>
+            
+            <div class="card conditions-card">
+                <h2>骑行情况</h2>
+                <form id="conditionsForm">
+                    <div class="form-group">
+                        <label for="temperature">温度条件</label>
+                        <select id="temperature">
+                            <option value="1.0">常温 (20℃左右)</option>
+                            <option value="1.0">常温 (10℃左右)</option>
+                            <option value="0.7">冬季 0℃以下</option>
+                            <option value="0.6">冬季 -10℃以下</option>
+                            <option value="0.55">冬季 -20℃</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="load">负重情况</label>
+                        <select id="load">
+                            <option value="1.0">单人骑行 (标准)</option>
+                            <option value="0.8">载人 (双人)</option>
+                            <option value="0.7">重载 (货物+载人)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="road">路况</label>
+                        <select id="road">
+                            <option value="1.0">平坦路面匀速</option>
+                            <option value="0.85">城市道路 (频繁启停)</option>
+                            <option value="0.75">山区道路 (上坡)</option>
+                            <option value="0.7">频繁爬坡</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="batteryType">电池类型</label>
+                        <select id="batteryType">
+                            <option value="0.95">锂电池</option>
+                            <option value="0.9">石墨烯电池</option>
+                            <option value="0.8">铅酸电池</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ridingStyle">骑行习惯</label>
+                        <select id="ridingStyle">
+                            <option value="0.95">平稳匀速骑行</option>
+                            <option value="0.9">正常骑行</option>
+                            <option value="0.8">激进驾驶 (频繁加速)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="batteryAge">电池状态</label>
+                        <select id="batteryAge">
+                            <option value="1.0">新电池</option>
+                            <option value="0.9">循环200次</option>
+                            <option value="0.8">循环400次</option>
+                            <option value="0.7">循环600次</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="card result-card">
+                <h2>估算结果</h2>
+                <div class="result-content">
+                    <div class="result-item">
+                        <h3>理论续航</h3>
+                        <p id="theoreticalRange">0 公里</p>
+                    </div>
+                    <div class="result-item">
+                        <h3>实际续航</h3>
+                        <p id="actualRange">0 公里</p>
+                    </div>
+                    <div class="result-details">
+                        <h4>影响因素分析</h4>
+                        <div class="factor-item">
+                            <span>温度系数:</span>
+                            <span id="tempFactor">1.0</span>
+                        </div>
+                        <div class="factor-item">
+                            <span>负重系数:</span>
+                            <span id="loadFactor">1.0</span>
+                        </div>
+                        <div class="factor-item">
+                            <span>路况系数:</span>
+                            <span id="roadFactor">1.0</span>
+                        </div>
+                        <div class="factor-item">
+                            <span>电池类型系数:</span>
+                            <span id="batteryTypeFactor">0.95</span>
+                        </div>
+                        <div class="factor-item">
+                            <span>骑行习惯系数:</span>
+                            <span id="ridingStyleFactor">0.95</span>
+                        </div>
+                        <div class="factor-item">
+                            <span>电池状态系数:</span>
+                            <span id="batteryAgeFactor">1.0</span>
+                        </div>
+                        <div class="factor-item total-factor">
+                            <span>总修正系数:</span>
+                            <span id="totalFactor">1.0</span>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" id="calculateBtn">计算续航</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <!-- Service Worker 注册脚本 -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(function(registration) {
+                        console.log('Service Worker 注册成功:', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('Service Worker 注册失败:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

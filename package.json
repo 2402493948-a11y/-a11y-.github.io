@@ -1,0 +1,23 @@
+{
+  "name": "electric-motorcycle-range-calculator",
+  "version": "1.0.0",
+  "description": "电动摩托车续航估算工具",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "electric motorcycle",
+    "range calculator",
+    "PWA"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.2.2",
+    "vite": "^4.4.9",
+    "vite-plugin-pwa": "^0.16.5"
+  }
+}
